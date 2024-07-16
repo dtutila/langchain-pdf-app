@@ -1,6 +1,6 @@
 import os
 import pinecone
-import langchain.vectorstores import Pinecone
+from langchain.vectorstores import Pinecone
 from app.chat.embeddings.opeai import embeddings
 
 pinecone.init(
@@ -8,4 +8,4 @@ pinecone.init(
     environment=os.getenv("PINECONE_ENV_NAME")
 )
 
-vector_store = Pinecode.from_existing_index(os.getenv("PINECONE_INDEX_NAME"), embeddings)
+vector_store = Pinecone.from_existing_index(os.getenv("PINECONE_INDEX_NAME"), embeddings)
