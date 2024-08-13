@@ -1,23 +1,40 @@
+from distutils.command.install import value
+
+from app.chat.redis import client
+
+def random_component_by_score(component_type, component_map):
+    if component_type not in ["llm", "retriever", "memory"]:
+        raise ValueError(f"Invalid component type: {component_type}")
+
+    values = client.hgetall(f"{component_type}_score_values")
+    counts = client.hgetall(f"{component_type}_score_count")
+
+    names = component_map.keys()
+
+    avg_scores = {}
+    for name in names:
+        score = int(values.get(name,1))
+        count = int(counts.get(name,1))
+        avg = score / count
+        avg_scores[name] = max(avg, 0.1)
+
+
+
+
+
 def score_conversation(
     conversation_id: str, score: float, llm: str, retriever: str, memory: str
 ) -> None:
-    """
-    This function interfaces with langfuse to assign a score to a conversation, specified by its ID.
-    It creates a new langfuse score utilizing the provided llm, retriever, and memory components.
-    The details are encapsulated in JSON format and submitted along with the conversation_id and the score.
+    score = min(max(score, 0),1)
+    client.hincrby("llm_score_values", llm, score)
+    client.hincrby("llm_score_count", llm, 1)
 
-    :param conversation_id: The unique identifier for the conversation to be scored.
-    :param score: The score assigned to the conversation.
-    :param llm: The Language Model component information.
-    :param retriever: The Retriever component information.
-    :param memory: The Memory component information.
+    client.hincrby("retriever_score_values", llm, score)
+    client.hincrby("retriever_score_count", llm, 1)
 
-    Example Usage:
+    client.hincrby("memory_score_values", llm, score)
+    client.hincrby("memory_score_count", llm, 1)
 
-    score_conversation('abc123', 0.75, 'llm_info', 'retriever_info', 'memory_info')
-    """
-
-    pass
 
 
 def get_scores():
