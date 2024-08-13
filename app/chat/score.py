@@ -1,4 +1,4 @@
-from distutils.command.install import value
+import random
 
 from app.chat.redis import client
 
@@ -18,8 +18,13 @@ def random_component_by_score(component_type, component_map):
         avg = score / count
         avg_scores[name] = max(avg, 0.1)
 
-
-
+    sum_scores = sum(avg_scores.values())
+    random_val = random.uniform(0, sum_scores)
+    cumulative = 0
+    for name, score in avg_scores.items():
+        cumulative += score
+        if cumulative >= random_val:
+            return name
 
 
 def score_conversation(

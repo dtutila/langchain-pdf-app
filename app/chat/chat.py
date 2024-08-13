@@ -1,5 +1,3 @@
-from prompt_toolkit.input.win32 import cooked_mode
-
 from app.chat.models import ChatArgs
 from app.chat.vector_stores import retriever_map
 from app.chat.llms import llm_map
