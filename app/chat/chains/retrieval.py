@@ -2,7 +2,7 @@ from langchain.chains import ConversationalRetrievalChain
 from app.chat.chains.streamable import StreamableChain
 
 
-class StreamingConversationalStreamingChain (
+class StreamingConversationalRetrievalChain (
     StreamableChain,
     ConversationalRetrievalChain
 ):

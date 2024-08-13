@@ -1,6 +1,3 @@
-from typing import Dict, Any, Optional, List
-from uuid import UUID
-
 from langchain.callbacks.base import BaseCallbackHandler
 
 class StreamingHandler(BaseCallbackHandler):
@@ -8,15 +5,9 @@ class StreamingHandler(BaseCallbackHandler):
         self.queue = queue
         self.streaming_run_ids = set()
 
-    def on_chain_start(
-        self,
-        serialized: Dict[str, Any],
-        messages,
-        run_id,
-        **kwargs
-    ):
-        if serialized["kwargs"].get("streaming"):
-           self.streaming_run_ids.add(run_id)
+    def on_chat_model_start(self, serialized, messages, run_id, **kwargs):
+        if serialized["kwargs"]["streaming"]:
+            self.streaming_run_ids.add(run_id)
 
     def on_llm_new_token(self, token, **kwargs):
         self.queue.put(token)
